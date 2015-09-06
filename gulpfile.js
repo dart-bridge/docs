@@ -1,6 +1,10 @@
 var gulp = require('gulp');
 
-gulp.task('build', require('./build/build'));
+var build = require('./build/build');
+gulp.task('build:build', build.build);
+gulp.task('build:commit', build.commit);
+gulp.task('build', ['build:build', 'build:commit']);
+
 gulp.task('deploy', require('./build/deploy'));
 
 gulp.task('default', ['build', 'deploy']);
