@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-markdown": "^1.0.0"
+  }
+}
