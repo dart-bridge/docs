@@ -8,9 +8,6 @@ To contribute, go to [github.com/dart-bridge/docs](https://github.com/dart-bridg
 |-- index.md                              This file is what you're seeing right now, but it's not used in the doc site
 |-- installation.md                       Installation instructions
 |
-|-- tour                                  Contains a terse tour of the different parts of the framework
-|   '-- index.md                          Overview of the component
-|
 |-- core                                  Contains documentation about [bridge.core]
 |   '-- index.md                          Overview of the component
 |

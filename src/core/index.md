@@ -1,0 +1,8 @@
+<p class="lead">
+  This is the only library you need to create a Bridge application, really. It contains the foundation for Bridge's
+  Service Oriented Architecture. It also contains facilities for handling application configuration, as well as the
+  IoC Container behind the Dependency Injection system that Bridge sports.
+</p>
+
+
+
