@@ -4,5 +4,68 @@
   with the Tether. Neat!
 </p>
 
+<p>The <code>Serializer</code> class in <code>bridge.transport</code> is one of the few classes that are available as a global object in the
+Bridge eco system.</p>
+<p>Most of your interactions with the <code>serializer</code> object are registrations of data structures. It works like this:</p>
+<h2 id="registering-a-data-structure">Registering a data structure</h2>
+<p>Different parts of Bridge (specifically in <code>bridge.http</code> and <code>bridge.tether</code>), the <code>Serializer</code> will be asked to either
+serialize or deserialize an object. Lists, maps and primitives will remain untouched, but any other objects must
+be registered on the serializer, or else it will be cast to a <code>String</code> on serialization.</p>
+<pre><code class="lang-dart">class MyClass {
+  String property1;
+  String property2;
+}
 
+serializer.register(&#39;MyClass&#39;, MyClass,
+  serialize: (MyClass o) =&gt; [
+    o.property1, 
+    o.property2],
+  deserialize: (List o) =&gt; new MyClass()
+    ..property1 = o[0]
+    ..property2 = o[1]);
+</code></pre>
+<p>Using the knowledge of how to break down and reconstruct a class, the serializer now has the ability to send instances
+of that class through protocols that doesn&#39;t share state with your application (e.g. HTTP or WebSocket).</p>
+<h2 id="serializing-and-deserializing">Serializing and deserializing</h2>
+<p>Given that the code above has been run, we can now serialize any structure that contains instances of <code>MyClass</code>:</p>
+<pre><code class="lang-dart">final serial = serializer.serialize([
+  new MyClass()..property1 = &#39;a&#39;,
+  new MyClass()..property1 = &#39;b&#39;,
+  new MyClass()..property1 = &#39;c&#39;,
+]);
 
+// At this point, `serial` could pass through JSON.encode without errors
+
+final rebuilt = serializer.deserialize(serial);
+
+print(rebuilt[1].property1); // &#39;b&#39;
+</code></pre>
+<h2 id="nested-objects">Nested objects</h2>
+<p>If you have a data structure that contains other data structures, you don&#39;t have to worry about them in the
+serialization of the class, as long as they have their own protocol. The serializer recursively works through the
+output of each serial data, to make sure that only primitive values remain:</p>
+<pre><code class="lang-dart">class First {
+  final Second second;
+
+  First(Second this.second);
+}
+
+class Second {
+  final String property;
+
+  Second(String this.property);
+}
+
+serializer.register(&#39;First&#39;, First,
+  serialize: (f) =&gt; f.second, 
+  deserialize: (s) new First(s));
+
+serializer.register(&#39;Second&#39;, Second,
+  serialize: (s) =&gt; s.property, 
+  deserialize: (p) new Second(p));
+</code></pre>
+<h2 id="data-structure-registration-should-be-shared">Data structure registration should be shared</h2>
+<p>It&#39;s important that both sides of the transport share the exact same protocol. In the
+<a href="https://github.com/dart-bridge/bridge">Bridge boilerplate app</a> the file <code>lib/app_shared/shared_structures.dart</code>
+contains a function that both the server and client runs. That way, both sides agree on what a serialized version of
+a data structure looks like.</p>
