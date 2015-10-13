@@ -1,0 +1,63 @@
+<p class="lead">
+  Bridge does all the connection stuff for you, so you can simply start using the database. The basic way of accessing
+  the tables in the database is through the Gateway.
+</p>
+<h2>Using the Gateway</h2>
+<p>We need to get the <code>Gateway</code> from the <a href="/docs/bridge.core/service-container">Container</a>. The easiest way of doing that
+is to use dependency injection in for example a route handler:</p>
+<pre><code class="language-dart">router<span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span>, <span class="hljs-punctuation">(</span><span class="hljs-type">Gateway</span> gateway<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+  <span class="hljs-keyword">return</span> gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>In this example, we’re returning a <code>Stream&lt;Map&lt;String, dynamic&gt;&gt;</code> in the route, which is translated to the JSON
+representation of all the rows in the <code>users</code> table in the database.</p>
+<pre><code class="language-json">[
+  {"<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>, "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Jane"</span></span>, "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Doe"</span></span>, "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"jane_doe@example.com"</span> </span>},
+  {"<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>, "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"John"</span></span>, "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Doe"</span></span>, "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"john_doe@example.com"</span> </span>},
+  {"<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">3</span></span>, "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Marty"</span></span>, "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"McFly"</span></span>, "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"marty@example.com"</span> </span>}
+]
+</code></pre>
+<h3>Select</h3>
+<p>The <code>table</code> method on the <code>Gateway</code> instance starts a new query on a specific table. The query is built using a
+stateless builder simply called <code>Query</code>. The <code>Query</code> contains methods for adding constraints on the query, as well
+as different methods for executing the query on the database.</p>
+<p>For example, the <code>where</code> method adds a <code>WHERE</code> clause to the statement. It takes a Dart callback that will be parsed
+to a SQL query:</p>
+<pre><code class="language-dart">gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span>
+  <span class="hljs-punctuation">.</span>where<span class="hljs-punctuation">(</span><span class="hljs-punctuation">(</span>user<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> user<span class="hljs-punctuation">.</span>age <span class="hljs-punctuation">&gt;</span> <span class="hljs-literal">20</span><span class="hljs-punctuation">)</span>
+  <span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<pre><code class="language-sql"><span class="hljs-operator"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> <span class="hljs-string">"users"</span>
+<span class="hljs-keyword">WHERE</span> <span class="hljs-string">"age"</span> &gt; <span class="hljs-number">20</span>;</span>
+</code></pre>
+<p>In this example, the <code>get</code> method executes the query as a select statement and returns the rows as a stream of maps.
+There are a bunch of methods on the <code>Query</code> builder, so explore it and see what you can do!</p>
+<p>Another cool example of the so called <em>expression predicates</em> in action is the <code>join</code> method:</p>
+<pre><code class="language-dart">gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span>
+  <span class="hljs-punctuation">.</span>join<span class="hljs-punctuation">(</span><span class="hljs-string">'addresses'</span>, <span class="hljs-punctuation">(</span>user, address<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> user<span class="hljs-punctuation">.</span>addressId <span class="hljs-punctuation">=</span><span class="hljs-punctuation">=</span> address<span class="hljs-punctuation">.</span>id<span class="hljs-punctuation">)</span>
+  <span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<pre><code class="language-sql"><span class="hljs-operator"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> <span class="hljs-string">"users"</span>
+<span class="hljs-keyword">JOIN</span> <span class="hljs-string">"addresses"</span> <span class="hljs-keyword">ON</span> <span class="hljs-string">"users.address_id"</span> = <span class="hljs-string">"addresses.id"</span>;</span>
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Trestle is a young package, and might not contain every feature. If you’re missing something, file an
+issue on the <a href="https://github.com/dart-bridge/trestle">Trestle GitHub repository</a></p>
+</blockquote>
+<h3>Insert</h3>
+<p>To add rows to a table, we use the terminology <code>add</code>. But there’s aliases for corresponding <code>insert</code> methods:</p>
+<pre><code class="language-dart">gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'dark_side'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>add<span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Darth'</span>, <span class="hljs-string">'last_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Vader'</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'light_side'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>addAll<span class="hljs-punctuation">(</span>[
+  <span class="hljs-punctuation">{</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Obi-Wan'</span>, <span class="hljs-string">'last_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Kenobi'</span><span class="hljs-punctuation">}</span>,
+  <span class="hljs-punctuation">{</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Luke'</span>, <span class="hljs-string">'last_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Skywalker'</span><span class="hljs-punctuation">}</span>,
+]<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>These methods return Futures that complete with <code>null</code> on success. So, to ensure that the user is informed if something
+went wrong, you should probably <code>await</code>.</p>
+<h3>Aggregates</h3>
+<p>Instead of just selecting rows, we can use aggregate methods to perform other queries:</p>
+<pre><code class="language-dart"><span class="hljs-type">int</span> usersCount <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>count<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-type">double</span> averageAge <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>average<span class="hljs-punctuation">(</span><span class="hljs-string">'age'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-type">int</span> highestAge <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>max<span class="hljs-punctuation">(</span><span class="hljs-string">'age'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-type">int</span> lowestAge <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> gateway<span class="hljs-punctuation">.</span>table<span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>min<span class="hljs-punctuation">(</span><span class="hljs-string">'age'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>

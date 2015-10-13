@@ -1,0 +1,36 @@
+<p class="lead">
+  To get more control over the data structures used to map over the database rows by the Repository, we can let
+  our data structured extend the Model class.
+</p>
+<p>If the <code>Repository</code> get a normal PODO (Plain Old Dart Object) as the type argument, every getter-setter property will
+be used for the corresponding table column. But if the type argument is a subclass of (or mixes in) the <code>Model</code> class,
+only the properties annotated with the <code>Field</code> constant will be used.</p>
+<h2>What’s the difference?</h2>
+<p>Here’s a data structure and a model that does the same thing in the repository:</p>
+<pre><code class="language-dart"><span class="hljs-comment">// PODO</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">Person</span> <span class="hljs-punctuation">{</span>
+  <span class="hljs-type">int</span> id<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">DateTime</span> created_at<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">DateTime</span> updated_at<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">String</span> first_name<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">String</span> last_name<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">int</span> age<span class="hljs-punctuation">;</span>
+  <span class="hljs-type">String</span> email<span class="hljs-punctuation">;</span>
+<span class="hljs-punctuation">}</span>
+
+<span class="hljs-comment">// Model</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">Person</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">Model</span> <span class="hljs-punctuation">{</span>
+  @<span class="hljs-type">Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> firstName<span class="hljs-punctuation">;</span>
+  @<span class="hljs-type">Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'last_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> lastName<span class="hljs-punctuation">;</span>
+  @field <span class="hljs-type">int</span> age<span class="hljs-punctuation">;</span>
+  @field <span class="hljs-type">String</span> email<span class="hljs-punctuation">;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>Above we can see that the <code>Model</code> adds an <code>id</code> property, as well as <code>createdAt</code> and <code>updatedAt</code> timestamps. The model
+also has the ability to use camel case in the properties without breaking convention in the database.</p>
+<p>Both of these approaches are completely decoupled from the actual database details, so that we can use these classes
+on the client side as well.</p>
+<blockquote>
+<p><strong>Note:</strong> Before using these classes with a SQL implementation, we have to <a href="/docs/bridge.database/migration">migrate</a>
+the database so we have a matching schema.</p>
+</blockquote>
