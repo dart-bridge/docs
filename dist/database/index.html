@@ -3,5 +3,25 @@
   makes it possible to use MySQL, SQLite, PostgreSQL as well as an in memory database implementation.
 </p>
 
+<p>To use <code>bridge.database</code>, you have to use its Service Provider. In <code>config/app.yaml</code>, include this item under the
+<code>service_providers</code> list:</p>
+<pre><code class="lang-yaml"># config/app.yaml
 
+service_providers
+- bridge.database.DatabaseServiceProvider
+</code></pre>
+<p>Next, use <code>config/database.yaml</code> to configure the database layer. The <code>driver</code> key specifies what database
+implementation Trestle should use. The available ones are <code>in_memory</code>, <code>sqlite</code>, <code>my_sql</code> and <code>postgres</code>.</p>
+<p>Use the driver specific configuration to further configure the database.</p>
+<pre><code class="lang-yaml"># config/database.yaml
 
+driver: my_sql
+
+drivers:
+  my_sql:
+    host: db.example.com
+    port: 1234
+    database: my_database
+
+  # More configuration is available for the SQL drivers
+</code></pre>
