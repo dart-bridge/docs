@@ -36,3 +36,6 @@ also has the ability to use camel case in the properties without breaking conven
 
 Both of these approaches are completely decoupled from the actual database details, so that we can use these classes
 on the client side as well.
+
+> **Note:** Before using these classes with a SQL implementation, we have to [migrate](/docs/bridge.database/migration)
+> the database so we have a matching schema.
