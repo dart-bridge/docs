@@ -16,12 +16,12 @@ different places.</p>
 
 <span class="hljs-keyword">class</span> <span class="hljs-type">MyDatabaseServiceProvider</span> <span class="hljs-keyword">implements</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
   setUp<span class="hljs-punctuation">(</span><span class="hljs-type">Container</span> container, <span class="hljs-type">MyDatabaseClass</span> db<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
-    container<span class="hljs-punctuation">.</span>singleton<span class="hljs-punctuation">(</span>db<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-    <span class="hljs-keyword">await</span> db<span class="hljs-punctuation">.</span>connect<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    container.<span class="hljs-method">singleton</span><span class="hljs-punctuation">(</span>db<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    <span class="hljs-keyword">await</span> db.<span class="hljs-method">connect</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
   
   tearDown<span class="hljs-punctuation">(</span><span class="hljs-type">MyDatabaseClass</span> db<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-keyword">await</span> db<span class="hljs-punctuation">.</span>disconnect<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    <span class="hljs-keyword">await</span> db.<span class="hljs-method">disconnect</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -41,17 +41,17 @@ in the Service Providers.</p>
 has interacted with our service, the <code>run</code> method is used. This order of interactions could look like this:</p>
 <pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">PluginServiceProvider</span> <span class="hljs-keyword">implements</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
   setUp<span class="hljs-punctuation">(</span><span class="hljs-type">Container</span> container, <span class="hljs-type">PluginManager</span> pluginManager<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-    container<span class="hljs-punctuation">.</span>singleton<span class="hljs-punctuation">(</span>pluginManager<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    container.<span class="hljs-method">singleton</span><span class="hljs-punctuation">(</span>pluginManager<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
   
   run<span class="hljs-punctuation">(</span><span class="hljs-type">PluginManager</span> pluginManager<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-    pluginManager<span class="hljs-punctuation">.</span>initializeAllRegisteredPlugins<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    pluginManager.<span class="hljs-method">initializeAllRegisteredPlugins</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
 <pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">MyPluginServiceProvider</span> <span class="hljs-keyword">implements</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
   load<span class="hljs-punctuation">(</span><span class="hljs-type">PluginManager</span> pluginManager, <span class="hljs-type">MySpecialPlugin</span> plugin<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-    pluginManager<span class="hljs-punctuation">.</span>registerPlugin<span class="hljs-punctuation">(</span>plugin<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    pluginManager.<span class="hljs-method">registerPlugin</span><span class="hljs-punctuation">(</span>plugin<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>

@@ -35,7 +35,7 @@ Go to the file `lib/main/main.dart`. Your file might look a little different, bu
 ```dart
 // lib/main/main.dart
 
-...
+// ...
 
 class Main {
   PagesController controller;

@@ -16,7 +16,7 @@ var interpolatedVariables = {
 
 hljs.registerLanguage("dart", function() {
   return {
-    keywords: 'const factory operator async await abstract implements extends class final static if else return new throw set get null true false part of part library import export this final',
+    keywords: 'const factory operator async await abstract implements extends class final static if for else return new throw set get null true false part of part library import export this final in as',
     literal: 'true false null',
     contains: [
       { className: 'string',
@@ -38,14 +38,17 @@ hljs.registerLanguage("dart", function() {
       { className: 'type',
         begin: 'num|double|int|bool'},
       { className: 'literal',
-        begin: /\b\d*\.?[\d]+/},
+        begin: /\b-?\d*\.?[\d]+/},
+      { className: 'literal',
+        begin: /#\w+/},
 
       //{ className: 'method',
       //  begin: /\.+/, end: /_?[a-z]\w*/, excludeBegin: true},
+      {begin: /\./, end: /\(/, returnBegin: true, returnEnd: true, contains: [
+        {className: 'method', begin: /\w+/, endsParent: true}
+      ]},
       { className: 'punctuation',
         begin: /[;:=.<>{}()+\-*]/, relevance: 10},
-      //{ className: 'method',
-      //  begin: /\n\s*\w+/, end: /.*?\(/, returnEnd: true},
     ]
   };
 });
@@ -73,11 +76,16 @@ hljs.registerLanguage("bridge-cli", function() {
 });
 hljs.registerLanguage("chalk", function() {
   return {
-    keywords: 'for if else',
     contains: [
       interpolatedVariables,
       {className: 'comment', begin: /<!/, end: />/},
+      {className: 'string', begin: /'|"/, end: /'|"/},
+      {className: 'comment', begin: /\/\/.*/},
       {className: 'keyword', begin: /</, end: />/},
+      {begin: /@/, end: /$/, contains: [
+        {className: 'keyword', begin: /extends|start block|end block|block|for|end for|if|else if|end if|include/},
+        {begin: /\(/, end: /\)/, subLanguage: 'dart'}
+      ]}
     ]
   };
 });
