@@ -82,6 +82,6 @@ Instead of just selecting rows, we can use aggregate methods to perform other qu
 ```dart
 int usersCount = await gateway.table('users').count();
 double averageAge = await gateway.table('users').average('age');
-int oldestAge = await gateway.table('users').max('age');
-int youngestAge = await gateway.table('users').min('age');
+int highestAge = await gateway.table('users').max('age');
+int lowestAge = await gateway.table('users').min('age');
 ```
