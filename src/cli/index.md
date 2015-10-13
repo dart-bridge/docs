@@ -4,6 +4,3 @@
 
 This small library provides a wrapper around [Cupid](https://github.com/dart-bridge/cupid), the package behind the
 system.
-
-
-
