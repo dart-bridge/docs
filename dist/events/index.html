@@ -8,30 +8,30 @@
 <p>To fire an event, you need to consider two things: the <strong>event object</strong> and the <strong>event identifier</strong>. If you simply
 want to provide a string value as the event object, you should specify the event identifier explicitly. If the
 identifier is omitted, the type of the event object will be used:</p>
-<pre><code class="lang-dart">// Using explicit identifier
-events.fire(&#39;message&#39;, as: #MyEvent);
+<pre><code class="lang-dart"><span class="hljs-comment">// Using explicit identifier</span>
+events.fire(&amp;apos;message&amp;apos;, <span class="hljs-keyword">as</span>: <span class="hljs-preprocessor">#MyEvent);</span>
 
-// Using a special class
-events.fire(new MyEvent());
+<span class="hljs-comment">// Using a special class</span>
+events.fire(<span class="hljs-keyword">new</span> MyEvent());
 
-// The above is equal to this (this is superfluous)
-events.fire(new MyEvent(), as: MyEvent);
+<span class="hljs-comment">// The above is equal to this (this is superfluous)</span>
+events.fire(<span class="hljs-keyword">new</span> MyEvent(), <span class="hljs-keyword">as</span>: MyEvent);
 </code></pre>
 <h2 id="listening-to-events">Listening to events</h2>
-<p>When you&#39;re listening to an event, you need to know the identifier of that event. You will receive the event objects as
+<p>When you&apos;re listening to an event, you need to know the identifier of that event. You will receive the event objects as
 a stream:</p>
 <pre><code class="lang-dart">// From the `fire` examples above
-Stream&lt;String&gt; myEvents = events.on(#MyEvent);
-Stream&lt;MyEvent&gt; myEvents = events.on(MyEvent);
+Stream&amp;lt;String&amp;gt; myEvents = events.on(<span class="hljs-comment">#MyEvent);</span>
+Stream&amp;lt;MyEvent&amp;gt; myEvents = events.on(MyEvent);
 
 // Callback style listener
 events.on(MyEvent).listen((MyEvent event) {
-  // ...
+  // <span class="hljs-keyword">...</span>
 });
 
 // Async style listener
-await for (String event in events.on(#MyEvent)) {
-  // ...
+await <span class="hljs-keyword">for</span> (String event <span class="hljs-keyword">in</span> events.on(<span class="hljs-comment">#MyEvent)) {</span>
+  // <span class="hljs-keyword">...</span>
 }
 </code></pre>
 <blockquote>
@@ -40,14 +40,14 @@ remember to use a constant, so that equality is innate.</p>
 </blockquote>
 <p>One approach would be to send through a data structure as the event object, and classify the type of event with an
 explicit event id:</p>
-<pre><code class="lang-dart">class Train {
-  final int passengers;
+<pre><code class="lang-dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Train</span> {</span>
+  <span class="hljs-keyword">final</span> <span class="hljs-typename">int</span> passengers;
 
-  Train({int this.passengers});
+  Train({<span class="hljs-typename">int</span> <span class="hljs-keyword">this</span>.passengers});
 }
 
-// The identifier provides context
-events.fire(new Train(passengers: 10), as: #TrainLeftTheStation);
-events.fire(new Train(passengers: 0), as: #TrainCrashed);
-events.fire(new Train(passengers: -666), as: #GhostTrain);
+<span class="hljs-comment">// The identifier provides context</span>
+events.fire(<span class="hljs-keyword">new</span> Train(<span class="hljs-string">passengers:</span> <span class="hljs-number">10</span>), <span class="hljs-string">as:</span> #TrainLeftTheStation);
+events.fire(<span class="hljs-keyword">new</span> Train(<span class="hljs-string">passengers:</span> <span class="hljs-number">0</span>), <span class="hljs-string">as:</span> #TrainCrashed);
+events.fire(<span class="hljs-keyword">new</span> Train(<span class="hljs-string">passengers:</span> -<span class="hljs-number">666</span>), <span class="hljs-string">as:</span> #GhostTrain);
 </code></pre>

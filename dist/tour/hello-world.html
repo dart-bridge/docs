@@ -1,29 +1,29 @@
 <p class="lead">
-  Let&#39;s see how Bridge works, shall we?
+  Let&apos;s see how Bridge works, shall we?
 </p>
 
 <h2 id="initial-commands">Initial commands</h2>
-<p>The first thing we&#39;ll do is make sure we can start up the server and see something in the browser without issues:</p>
-<pre><code class="lang-bash">$ dart bridge
+<p>The first thing we&apos;ll do is make sure we can start up the server and see something in the browser without issues:</p>
+<pre><code class="lang-bash"><span class="hljs-variable">$ </span>dart bridge
 </code></pre>
-<pre><code class="lang-bridge-cli">= start
+<pre><code class="lang-bridge-cli"><span class="hljs-header">= start</span>
 Server started on http://localhost:1337
 =
 </code></pre>
 <p>Open <a href="http://localhost:1337">the URL</a> and you should see the Bridge logo.</p>
 <p>Next, we want the program to restart when we change any source file. To do that, we can run the <code>watch</code> command.
 However, after the restart the server will have stopped. To change what commands will be run on each restart, we have
-to provide them in the argument list of the <code>dart bridge</code> command.</p>
+to provide them in the argument list of the <code><span class="hljs-title">dart</span> bridge</code> command.</p>
 <p>To start the server, and restart both the program and the server on each file change, we can run this command:</p>
-<pre><code class="lang-bash">$ dart bridge start, watch
+<pre><code class="lang-bash">$ dart bridge <span class="hljs-built_in">start</span>, watch
 </code></pre>
 <h2 id="hello-world">Hello World</h2>
-<p>When that&#39;s done, we can go into the project and change what we see in the browser.</p>
-<p>Go to the file <code>lib/main/main.dart</code>. Your file might look a little different, but this is the gist of it. Focus on the 
+<p>When that&apos;s done, we can go into the project and change what we see in the browser.</p>
+<p>Go to the file <code>lib/<span class="hljs-keyword">main</span>/<span class="hljs-keyword">main</span>.dart</code>. Your file might look a little different, but this is the gist of it. Focus on the 
 <code>routes</code> method on the <code>Main</code> class:</p>
 <pre><code class="lang-dart">// lib/main/main.dart
 
-...
+<span class="hljs-keyword">...</span>
 
 class Main {
   PagesController controller;
@@ -31,57 +31,57 @@ class Main {
   Main(this.controller);
 
   routes(Router router) {
-    router.get(&#39;/&#39;, controller.index).named(&#39;index&#39;);
+    router.get(&amp;apos;/&amp;apos;, controller.index).named(&amp;apos;index&amp;apos;);
   }
 }
 </code></pre>
 <p>Right now, a <code>PagesController</code> is injected in the <code>Main</code> class constructor. The <code>routes</code> method registers a route that
-listens for <code>GET</code> requests on the root (<code>/</code>) uri. The second argument in the call is the function that will respond to
-each request. Here we&#39;re delegating that to an <code>index</code> method on the controller. Finally, it&#39;s naming the route <code>index</code>.</p>
-<p>Let&#39;s change this up a bit by creating our own route:</p>
+listens for <code><span class="hljs-literal">GET</span></code> requests on the root (<code>/</code>) uri. The second argument in the call is the function that will respond to
+each request. Here we&apos;re delegating that to an <code><span class="hljs-keyword">index</span></code> method on the controller. Finally, it&apos;s naming the route <code><span class="hljs-keyword">index</span></code>.</p>
+<p>Let&apos;s change this up a bit by creating our own route:</p>
 <pre><code class="lang-dart">routes(Router router) {
-  router.get(&#39;/&#39;, () {
-    return &#39;Hello, World!&#39;;
+  router.<span class="hljs-keyword">get</span>(&amp;apos;/&amp;apos;, () {
+    <span class="hljs-keyword">return</span> &amp;apos;Hello, World!&amp;apos;;
   });
 }
 </code></pre>
 <p>Save the file and reload the browser, you should now see &quot;Hello, World!&quot; there!</p>
-<p>But returning simple values isn&#39;t really what we want, right? Let&#39;s change the closure to return a template:</p>
-<pre><code class="lang-dart">routes(Router router) {
-  router.get(&#39;/&#39;, () {
-    return template(&#39;index&#39;);
+<p>But returning simple values isn&apos;t really what we want, right? Let&apos;s change the closure to return a template:</p>
+<pre><code class="lang-dart">routes(<span class="hljs-type">Router</span> router) {
+  router.get(&amp;apos;/&amp;apos;, () {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">template</span>(&amp;apos;index&amp;apos;);
   });
 }
 </code></pre>
 <hr>
-<p>If you go back to the browser now, we&#39;ll once again see the Bridge logo. So let&#39;s find that template!</p>
-<pre><code class="lang-chalk">// lib/templates/index.chalk.html
+<p>If you go back to the browser now, we&apos;ll once again see the Bridge logo. So let&apos;s find that template!</p>
+<pre><code class="lang-chalk"><span class="hljs-comment">// lib/templates/index.chalk.html</span>
 
-@extends (&#39;app&#39;)
+<span class="hljs-variable">@extends</span> (&amp;apos;app&amp;apos;)
 
-@start block (&#39;content&#39;)
-  ... // There&#39;s a bunch of HTML here
-@end block
+<span class="hljs-variable">@start</span> block (&amp;apos;content&amp;apos;)
+  ... <span class="hljs-comment">// There&amp;apos;s a bunch of HTML here</span>
+<span class="hljs-variable">@end</span> block
 </code></pre>
-<p>What you&#39;re seeing here is a Chalk template. Chalk is Bridge&#39;s server side templating engine. Let&#39;s just replace
+<p>What you&apos;re seeing here is a Chalk template. Chalk is Bridge&apos;s server side templating engine. Let&apos;s just replace
 everything in this file with some basic html:</p>
-<pre><code class="lang-chalk">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;&lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Hello again, World!&lt;/h1&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+<pre><code class="lang-chalk"><span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;<span class="hljs-subst">!</span>DOCTYPE html<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+<span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;html<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+  <span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;head<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;<span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;/head<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+  <span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;body<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+    <span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;h1<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;Hello again, World<span class="hljs-subst">!&amp;</span><span class="hljs-literal">lt</span>;/h1<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+  <span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;/body<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
+<span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;/html<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;
 </code></pre>
 <p>The browser should not contain any surprises right now. Just a heading with the message. But we can do loads of cool
 stuff here! For example, try this:</p>
-<pre><code class="lang-chalk">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;&lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;1 + 1 = ${1 + 1}&lt;/h1&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+<pre><code class="lang-chalk">&amp;<span class="hljs-keyword">lt</span>;!DOCTYPE html&amp;<span class="hljs-keyword">gt</span>;
+&amp;<span class="hljs-keyword">lt</span>;html&amp;<span class="hljs-keyword">gt</span>;
+  &amp;<span class="hljs-keyword">lt</span>;head&amp;<span class="hljs-keyword">gt</span>;&amp;<span class="hljs-keyword">lt</span>;/head&amp;<span class="hljs-keyword">gt</span>;
+  &amp;<span class="hljs-keyword">lt</span>;body&amp;<span class="hljs-keyword">gt</span>;
+    &amp;<span class="hljs-keyword">lt</span>;h<span class="hljs-number">1</span>&amp;<span class="hljs-keyword">gt</span>;<span class="hljs-number">1</span> + <span class="hljs-number">1</span> = ${<span class="hljs-number">1</span> + <span class="hljs-number">1</span>}&amp;<span class="hljs-keyword">lt</span>;/h<span class="hljs-number">1</span>&amp;<span class="hljs-keyword">gt</span>;
+  &amp;<span class="hljs-keyword">lt</span>;/body&amp;<span class="hljs-keyword">gt</span>;
+&amp;<span class="hljs-keyword">lt</span>;/html&amp;<span class="hljs-keyword">gt</span>;
 </code></pre>
 <blockquote>
 <p><strong>Note:</strong> If you want to learn more about Chalk, go <a href="/docs/bridge.view/chalk">here</a>!</p>
