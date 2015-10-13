@@ -3,7 +3,7 @@
 </p>
 
 <h2 id="why-use-migrations-">Why use migrations?</h2>
-<p>Imagine you&#39;re working with a team of multiple people and you have a database layer that you all depend on. Then
+<p>Imagine you&apos;re working with a team of multiple people and you have a database layer that you all depend on. Then
 everyone on the team must have the same database schema. Or else some features will break.</p>
 <p>Instead of dealing with the hassle of making sure that everyone has the exact same schema, we can enforce it with
 migrations. Think of it as version control for your database schema!</p>
@@ -15,26 +15,26 @@ everything and return the database to its original state, we can run <code>db_ro
 the migrations. This, however, will of course delete any rows in the tables, so instead of making a change to a
 migration, we can create a new migration which alters the schema, and then run the non desctructive <code>db_migrate</code>.</p>
 <h2 id="writing-the-migration">Writing the Migration</h2>
-<p>Inside <code>lib/migrations.dart</code> we have a unified place to store our migrations. Create a new class that extends the
-<code>Migration</code> class. You will then be forced to implement two methods: <code>run</code> and <code>rollback</code>. Each method receives
+<p>Inside <code><span class="hljs-keyword">lib</span>/migrations.dart</code> we have a unified place to store our migrations. Create a new class that extends the
+<code>Migration</code> class. You will then be forced to implement two methods: <code><span class="hljs-command">run</span></code> and <code><span class="hljs-operator"><span class="hljs-keyword">rollback</span></span></code>. Each method receives
 the <code>Gateway</code> instance, which has methods to access and modify the database schema.</p>
-<pre><code class="lang-dart">class CreateArticlesTable extends Migration {
-  run(Gateway gateway) async {
-    await gateway.create(&#39;articles&#39;, (Schema schema) {
+<pre><code class="lang-dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CreateArticlesTable</span> <span class="hljs-keyword"><span class="hljs-keyword">extends</span></span> <span class="hljs-title">Migration</span> {</span>
+  run(<span class="hljs-type">Gateway</span> gateway) async {
+    await gateway.create(&amp;apos;articles&amp;apos;, (<span class="hljs-type">Schema</span> schema) {
 
-      // These two fills the schema neccessary for a Model to work
+      <span class="hljs-comment">// These two fills the schema neccessary for a Model to work</span>
       schema.id();
       schema.timestamps();
 
-      // Specific to the Article model
-      schema.string(&#39;name&#39;);
-      schema.string(&#39;serial_number&#39;).unique();
+      <span class="hljs-comment">// Specific to the Article model</span>
+      schema.string(&amp;apos;name&amp;apos;);
+      schema.string(&amp;apos;serial_number&amp;apos;).unique();
     });
   }
 
-  rollback(Gateway gateway) async {
-    // This is how we roll back the creation of a table
-    await gateway.drop(&#39;articles&#39;);
+  rollback(<span class="hljs-type">Gateway</span> gateway) async {
+    <span class="hljs-comment">// This is how we roll back the creation of a table</span>
+    await gateway.drop(&amp;apos;articles&amp;apos;);
   }
 }
 </code></pre>

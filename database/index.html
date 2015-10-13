@@ -3,25 +3,25 @@
   makes it possible to use MySQL, SQLite, PostgreSQL as well as an in memory database implementation.
 </p>
 
-<p>To use <code>bridge.database</code>, you have to use its Service Provider. In <code>config/app.yaml</code>, include this item under the
+<p>To use <code>bridge.database</code>, you have to use its Service Provider. In <code>config/<span class="hljs-keyword">app</span>.yaml</code>, include this item under the
 <code>service_providers</code> list:</p>
-<pre><code class="lang-yaml"># config/app.yaml
+<pre><code class="lang-yaml"><span class="hljs-header"># config/app.yaml</span>
 
 service_providers
-- bridge.database.DatabaseServiceProvider
+<span class="hljs-bullet">- </span>bridge.database.DatabaseServiceProvider
 </code></pre>
 <p>Next, use <code>config/database.yaml</code> to configure the database layer. The <code>driver</code> key specifies what database
-implementation Trestle should use. The available ones are <code>in_memory</code>, <code>sqlite</code>, <code>my_sql</code> and <code>postgres</code>.</p>
+implementation Trestle should use. The available ones are <code><span class="hljs-keyword">in</span>_memory</code>, <code>sqlite</code>, <code>my_sql</code> and <code>postgres</code>.</p>
 <p>Use the driver specific configuration to further configure the database.</p>
-<pre><code class="lang-yaml"># config/database.yaml
+<pre><code class="lang-yaml"><span class="hljs-preprocessor"># config/database.yaml</span>
 
-driver: my_sql
+<span class="hljs-label">driver:</span> my_sql
 
-drivers:
+<span class="hljs-label">drivers:</span>
   my_sql:
     host: db.example.com
-    port: 1234
+    port: <span class="hljs-number">1234</span>
     database: my_database
 
-  # More configuration is available for the SQL drivers
+  <span class="hljs-preprocessor"># More configuration is available for the SQL drivers</span>
 </code></pre>

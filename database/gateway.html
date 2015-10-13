@@ -6,59 +6,59 @@
 <h2 id="using-the-gateway">Using the Gateway</h2>
 <p>We need to get the <code>Gateway</code> from the <a href="/docs/bridge.core/service-container">Container</a>. The easiest way of doing that
 is to use dependency injection in for example a route handler:</p>
-<pre><code class="lang-dart">router.get(&#39;users&#39;, (Gateway gateway) {
-  return gateway.table(&#39;users&#39;).get();
+<pre><code class="lang-dart">router.<span class="hljs-literal">get</span>(&amp;apos;users&amp;apos;, (Gateway gateway) {
+  <span class="hljs-keyword">return</span> gateway.<span class="hljs-keyword">table</span>(&amp;apos;users&amp;apos;).<span class="hljs-literal">get</span>();
 });
 </code></pre>
-<p>In this example, we&#39;re returning a <code>Stream&lt;Map&lt;String, dynamic&gt;&gt;</code> in the route, which is translated to the JSON
+<p>In this example, we&apos;re returning a <code>Stream<span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;<span class="hljs-built_in">Map</span><span class="hljs-subst">&amp;</span><span class="hljs-literal">lt</span>;<span class="hljs-built_in">String</span>, dynamic<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;<span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>;</code> in the route, which is translated to the JSON
 representation of all the rows in the <code>users</code> table in the database.</p>
-<pre><code class="lang-json">[
-  {&quot;id&quot;: 1, &quot;first_name&quot;: &quot;Jane&quot;, &quot;last_name&quot;: &quot;Doe&quot;, &quot;email&quot;: &quot;jane_doe@example.com&quot; },
-  {&quot;id&quot;: 2, &quot;first_name&quot;: &quot;John&quot;, &quot;last_name&quot;: &quot;Doe&quot;, &quot;email&quot;: &quot;john_doe@example.com&quot; },
-  {&quot;id&quot;: 3, &quot;first_name&quot;: &quot;Marty&quot;, &quot;last_name&quot;: &quot;McFly&quot;, &quot;email&quot;: &quot;marty@example.com&quot; }
-]
+<pre><code class="lang-json"><span class="hljs-collection">[
+  <span class="hljs-collection">{&amp;quot;id&amp;quot;: <span class="hljs-number">1</span>, &amp;quot;first_name&amp;quot;: &amp;quot;Jane&amp;quot;, &amp;quot;last_name&amp;quot;: &amp;quot;Doe&amp;quot;, &amp;quot;email&amp;quot;: &amp;quot;jane_doe@example.com&amp;quot; }</span>,
+  <span class="hljs-collection">{&amp;quot;id&amp;quot;: <span class="hljs-number">2</span>, &amp;quot;first_name&amp;quot;: &amp;quot;John&amp;quot;, &amp;quot;last_name&amp;quot;: &amp;quot;Doe&amp;quot;, &amp;quot;email&amp;quot;: &amp;quot;john_doe@example.com&amp;quot; }</span>,
+  <span class="hljs-collection">{&amp;quot;id&amp;quot;: <span class="hljs-number">3</span>, &amp;quot;first_name&amp;quot;: &amp;quot;Marty&amp;quot;, &amp;quot;last_name&amp;quot;: &amp;quot;McFly&amp;quot;, &amp;quot;email&amp;quot;: &amp;quot;marty@example.com&amp;quot; }</span>
+]</span>
 </code></pre>
 <h3 id="select">Select</h3>
-<p>The <code>table</code> method on the <code>Gateway</code> instance starts a new query on a specific table. The query is built using a
-stateless builder simply called <code>Query</code>. The <code>Query</code> contains methods for adding constraints on the query, as well
+<p>The <code><span class="hljs-built_in">table</span></code> method on the <code>Gateway</code> instance starts a new query on a specific table. The query is built using a
+stateless builder simply called <code><span class="hljs-keyword">Query</span></code>. The <code><span class="hljs-keyword">Query</span></code> contains methods for adding constraints on the query, as well
 as different methods for executing the query on the database.</p>
-<p>For example, the <code>where</code> method adds a <code>WHERE</code> clause to the statement. It takes a Dart callback that will be parsed
+<p>For example, the <code><span class="hljs-keyword">where</span></code> method adds a <code><span class="hljs-keyword">WHERE</span></code> clause to the statement. It takes a Dart callback that will be parsed
 to a SQL query:</p>
-<pre><code class="lang-dart">gateway.table(&#39;users&#39;)
-  .where((user) =&gt; user.age &gt; 20)
-  .get();
+<pre><code class="lang-dart">gateway.table<span class="hljs-comment">(&amp;apos;users&amp;apos;)</span>
+  .where<span class="hljs-comment">((user)</span> =&amp;<span class="hljs-keyword">gt</span>; user.age &amp;<span class="hljs-keyword">gt</span>; <span class="hljs-number">20</span>)
+  .get<span class="hljs-comment">()</span>;
 </code></pre>
-<pre><code class="lang-sql">SELECT * FROM &quot;users&quot;
-WHERE &quot;age&quot; &gt; 20;
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-subst">*</span> FROM <span class="hljs-subst">&amp;</span>quot;users<span class="hljs-subst">&amp;</span>quot;
+<span class="hljs-keyword">WHERE</span> <span class="hljs-subst">&amp;</span>quot;age<span class="hljs-subst">&amp;</span>quot; <span class="hljs-subst">&amp;</span><span class="hljs-literal">gt</span>; <span class="hljs-number">20</span>;
 </code></pre>
-<p>In this example, the <code>get</code> method executes the query as a select statement and returns the rows as a stream of maps.
-There are a bunch of methods on the <code>Query</code> builder, so explore it and see what you can do!</p>
-<p>Another cool example of the so called <em>expression predicates</em> in action is the <code>join</code> method:</p>
-<pre><code class="lang-dart">gateway.table(&#39;users&#39;)
-  .join(&#39;addresses&#39;, (user, address) =&gt; user.addressId == address.id)
-  .get();
+<p>In this example, the <code><span class="hljs-keyword">get</span></code> method executes the query as a select statement and returns the rows as a stream of maps.
+There are a bunch of methods on the <code><span class="hljs-keyword">Query</span></code> builder, so explore it and see what you can do!</p>
+<p>Another cool example of the so called <em>expression predicates</em> in action is the <code><span class="hljs-keyword">join</span></code> method:</p>
+<pre><code class="lang-dart">gateway.table(&amp;apos;users&amp;apos;)
+  .join(&amp;apos;addresses&amp;apos;, (user, address) =&amp;gt; user.addressId == address.<span class="hljs-property">id</span>)
+  .<span class="hljs-keyword">get</span>();
 </code></pre>
-<pre><code class="lang-sql">SELECT * FROM &quot;users&quot;
-JOIN &quot;addresses&quot; ON &quot;users.address_id&quot; = &quot;addresses.id&quot;;
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> &amp;quot;users&amp;quot;
+<span class="hljs-keyword">JOIN</span> &amp;quot;addresses&amp;quot; <span class="hljs-keyword">ON</span> &amp;quot;users.address_id&amp;quot; = &amp;quot;addresses.id&amp;quot;;
 </code></pre>
 <blockquote>
-<p><strong>Note:</strong> Trestle is a young package, and might not contain every feature. If you&#39;re missing something, file an
+<p><strong>Note:</strong> Trestle is a young package, and might not contain every feature. If you&apos;re missing something, file an
 issue on the <a href="https://github.com/dart-bridge/trestle">Trestle GitHub repository</a></p>
 </blockquote>
 <h3 id="insert">Insert</h3>
-<p>To add rows to a table, we use the terminology <code>add</code>. But there&#39;s aliases for corresponding <code>insert</code> methods:</p>
-<pre><code class="lang-dart">gateway.table(&#39;dark_side&#39;).add({&#39;first_name&#39;: &#39;Darth&#39;, &#39;last_name&#39;: &#39;Vader&#39;});
-gateway.table(&#39;light_side&#39;).addAll([
-  {&#39;first_name&#39;: &#39;Obi-Wan&#39;, &#39;last_name&#39;: &#39;Kenobi&#39;},
-  {&#39;first_name&#39;: &#39;Luke&#39;, &#39;last_name&#39;: &#39;Skywalker&#39;},
-]);
+<p>To add rows to a table, we use the terminology <code><span class="hljs-keyword">add</span></code>. But there&apos;s aliases for corresponding <code><span class="hljs-operator"><span class="hljs-keyword">insert</span></span></code> methods:</p>
+<pre><code class="lang-dart">gateway.table<span class="hljs-comment">(&amp;apos;dark_side&amp;apos;)</span>.add<span class="hljs-comment">({&amp;apos;first_name&amp;apos;: &amp;apos;Darth&amp;apos;, &amp;apos;last_name&amp;apos;: &amp;apos;Vader&amp;apos;})</span>;
+gateway.table<span class="hljs-comment">(&amp;apos;light_side&amp;apos;)</span>.addAll<span class="hljs-comment">([
+  {&amp;apos;first_name&amp;apos;: &amp;apos;Obi-Wan&amp;apos;, &amp;apos;last_name&amp;apos;: &amp;apos;Kenobi&amp;apos;},
+  {&amp;apos;first_name&amp;apos;: &amp;apos;Luke&amp;apos;, &amp;apos;last_name&amp;apos;: &amp;apos;Skywalker&amp;apos;},
+])</span>;
 </code></pre>
-<p>These methods return Futures that complete with <code>null</code> on success. So, to ensure that the user is informed if something
-went wrong, you should probably <code>await</code>.</p>
+<p>These methods return Futures that complete with <code><span class="hljs-literal">null</span></code> on success. So, to ensure that the user is informed if something
+went wrong, you should probably <code><span class="hljs-keyword">await</span></code>.</p>
 <h3 id="aggregates">Aggregates</h3>
 <p>Instead of just selecting rows, we can use aggregate methods to perform other queries:</p>
-<pre><code class="lang-dart">int usersCount = await gateway.table(&#39;users&#39;).count();
-double averageAge = await gateway.table(&#39;users&#39;).average(&#39;age&#39;);
-int highestAge = await gateway.table(&#39;users&#39;).max(&#39;age&#39;);
-int lowestAge = await gateway.table(&#39;users&#39;).min(&#39;age&#39;);
+<pre><code class="lang-dart"><span class="hljs-keyword">int</span> usersCount = <span class="hljs-keyword">await</span> gateway.table(&amp;apos;users&amp;apos;).count();
+<span class="hljs-keyword">double</span> averageAge = <span class="hljs-keyword">await</span> gateway.table(&amp;apos;users&amp;apos;).average(&amp;apos;age&amp;apos;);
+<span class="hljs-keyword">int</span> highestAge = <span class="hljs-keyword">await</span> gateway.table(&amp;apos;users&amp;apos;).max(&amp;apos;age&amp;apos;);
+<span class="hljs-keyword">int</span> lowestAge = <span class="hljs-keyword">await</span> gateway.table(&amp;apos;users&amp;apos;).min(&amp;apos;age&amp;apos;);
 </code></pre>
