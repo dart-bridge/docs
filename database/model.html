@@ -1,0 +1,37 @@
+<p class="lead">
+  To get more control over the data structures used to map over the database rows by the Repository, we can let
+  our data structured extend the Model class.
+</p>
+
+<p>If the <code>Repository</code> get a normal PODO (Plain Old Dart Object) as the type argument, every getter-setter property will
+be used for the corresponding table column. But if the type argument is a subclass of (or mixes in) the <code>Model</code> class,
+only the properties annotated with the <code>Field</code> constant will be used.</p>
+<h2 id="what-s-the-difference-">What&#39;s the difference?</h2>
+<p>Here&#39;s a data structure and a model that does the same thing in the repository:</p>
+<pre><code class="lang-dart">// PODO
+class Person {
+  int id;
+  DateTime created_at;
+  DateTime updated_at;
+  String first_name;
+  String last_name;
+  int age;
+  String email;
+}
+
+// Model
+class Person extends Model {
+  @Field(&#39;first_name&#39;) String firstName;
+  @Field(&#39;last_name&#39;) String lastName;
+  @field int age;
+  @field String email;
+}
+</code></pre>
+<p>Above we can see that the <code>Model</code> adds an <code>id</code> property, as well as <code>createdAt</code> and <code>updatedAt</code> timestamps. The model
+also has the ability to use camel case in the properties without breaking convention in the database.</p>
+<p>Both of these approaches are completely decoupled from the actual database details, so that we can use these classes
+on the client side as well.</p>
+<blockquote>
+<p><strong>Note:</strong> Before using these classes with a SQL implementation, we have to <a href="/docs/bridge.database/migration">migrate</a>
+the database so we have a matching schema.</p>
+</blockquote>

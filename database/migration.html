@@ -1,0 +1,40 @@
+<p class="lead">
+  Since Trestle uses SQL for the most part, we need to ensure that the database schema matches our models.
+</p>
+
+<h2 id="why-use-migrations-">Why use migrations?</h2>
+<p>Imagine you&#39;re working with a team of multiple people and you have a database layer that you all depend on. Then
+everyone on the team must have the same database schema. Or else some features will break.</p>
+<p>Instead of dealing with the hassle of making sure that everyone has the exact same schema, we can enforce it with
+migrations. Think of it as version control for your database schema!</p>
+<h3 id="commands">Commands</h3>
+<p>Each migration marks a change to the schema, and also provide a way to roll back that change. To ensure that they use
+the most recent iteration, every team member simply has to run the <code>db_migrate</code> command in the Bridge CLI. To roll back
+everything and return the database to its original state, we can run <code>db_rollback</code>.</p>
+<p>Finally, if we make a change to an existing migration we can run <code>db_refresh</code> to roll back everything and then rerun
+the migrations. This, however, will of course delete any rows in the tables, so instead of making a change to a
+migration, we can create a new migration which alters the schema, and then run the non desctructive <code>db_migrate</code>.</p>
+<h2 id="writing-the-migration">Writing the Migration</h2>
+<p>Inside <code>lib/migrations.dart</code> we have a unified place to store our migrations. Create a new class that extends the
+<code>Migration</code> class. You will then be forced to implement two methods: <code>run</code> and <code>rollback</code>. Each method receives
+the <code>Gateway</code> instance, which has methods to access and modify the database schema.</p>
+<pre><code class="lang-dart">class CreateArticlesTable extends Migration {
+  run(Gateway gateway) async {
+    await gateway.create(&#39;articles&#39;, (Schema schema) {
+
+      // These two fills the schema neccessary for a Model to work
+      schema.id();
+      schema.timestamps();
+
+      // Specific to the Article model
+      schema.string(&#39;name&#39;);
+      schema.string(&#39;serial_number&#39;).unique();
+    });
+  }
+
+  rollback(Gateway gateway) async {
+    // This is how we roll back the creation of a table
+    await gateway.drop(&#39;articles&#39;);
+  }
+}
+</code></pre>
