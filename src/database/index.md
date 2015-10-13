@@ -9,7 +9,7 @@ To use `bridge.database`, you have to use its Service Provider. In `config/app.y
 ```yaml
 # config/app.yaml
 
-service_providers
+service_providers:
 - bridge.database.DatabaseServiceProvider
 ```
 

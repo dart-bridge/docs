@@ -1,6 +1,8 @@
 {
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-markdown": "^1.0.0"
+    "gulp-highlight": "^1.0.0",
+    "gulp-markdown-it": "^0.1.1",
+    "highlight.js": "^8.8.0"
   }
 }
