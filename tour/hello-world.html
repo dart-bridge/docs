@@ -22,15 +22,15 @@ to provide them in the argument list of the <code>dart bridge</code> command.</p
 <code>routes</code> method on the <code>Main</code> class:</p>
 <pre><code class="language-dart"><span class="hljs-comment">// lib/main/main.dart</span>
 
-<span class="hljs-punctuation">.</span><span class="hljs-punctuation">.</span><span class="hljs-punctuation">.</span>
+<span class="hljs-comment">// ...</span>
 
 <span class="hljs-keyword">class</span> <span class="hljs-type">Main</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-type">PagesController</span> controller<span class="hljs-punctuation">;</span>
   
-  <span class="hljs-type">Main</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">this</span><span class="hljs-punctuation">.</span>controller<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-type">Main</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">this</span>.<span class="hljs-method">controller</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 
   routes<span class="hljs-punctuation">(</span><span class="hljs-type">Router</span> router<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-    router<span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, controller<span class="hljs-punctuation">.</span>index<span class="hljs-punctuation">)</span><span class="hljs-punctuation">.</span>named<span class="hljs-punctuation">(</span><span class="hljs-string">'index'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, controller.<span class="hljs-method">index</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'index'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
@@ -39,7 +39,7 @@ listens for <code>GET</code> requests on the root (<code>/</code>) uri. The seco
 each request. Here we’re delegating that to an <code>index</code> method on the controller. Finally, it’s naming the route <code>index</code>.</p>
 <p>Let’s change this up a bit by creating our own route:</p>
 <pre><code class="language-dart">routes<span class="hljs-punctuation">(</span><span class="hljs-type">Router</span> router<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-  router<span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+  router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello, World!'</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
@@ -47,20 +47,20 @@ each request. Here we’re delegating that to an <code>index</code> method on th
 <p>Save the file and reload the browser, you should now see “Hello, World!” there!</p>
 <p>But returning simple values isn’t really what we want, right? Let’s change the closure to return a template:</p>
 <pre><code class="language-dart">routes<span class="hljs-punctuation">(</span><span class="hljs-type">Router</span> router<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-  router<span class="hljs-punctuation">.</span><span class="hljs-keyword">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+  router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-keyword">return</span> template<span class="hljs-punctuation">(</span><span class="hljs-string">'index'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
 <hr>
 <p>If you go back to the browser now, we’ll once again see the Bridge logo. So let’s find that template!</p>
-<pre><code class="language-chalk">// lib/templates/index.chalk.html
+<pre><code class="language-chalk"><span class="hljs-comment">// lib/templates/index.chalk.html</span>
 
-@extends ('app')
+@<span class="hljs-keyword">extends</span> <span class="dart"><span class="hljs-punctuation">(</span><span class="hljs-string">'app'</span><span class="hljs-punctuation">)</span></span>
 
-@start block ('content')
-  ... // There's a bunch of HTML here
-@end block
+@<span class="hljs-keyword">start block</span> <span class="dart"><span class="hljs-punctuation">(</span><span class="hljs-string">'content'</span><span class="hljs-punctuation">)</span></span>
+  ... <span class="hljs-comment">// There's a bunch of HTML here</span>
+@<span class="hljs-keyword">end block</span>
 </code></pre>
 <p>What you’re seeing here is a Chalk template. Chalk is Bridge’s server side templating engine. Let’s just replace
 everything in this file with some basic html:</p>
