@@ -20,10 +20,10 @@ only the properties annotated with the <code>Field</code> constant will be used.
 
 <span class="hljs-comment">// Model</span>
 <span class="hljs-keyword">class</span> <span class="hljs-type">Person</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">Model</span> <span class="hljs-punctuation">{</span>
-  @<span class="hljs-type">Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> firstName<span class="hljs-punctuation">;</span>
-  @<span class="hljs-type">Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'last_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> lastName<span class="hljs-punctuation">;</span>
-  @field <span class="hljs-type">int</span> age<span class="hljs-punctuation">;</span>
-  @field <span class="hljs-type">String</span> email<span class="hljs-punctuation">;</span>
+  <span class="hljs-literal">@Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'first_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> firstName<span class="hljs-punctuation">;</span>
+  <span class="hljs-literal">@Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'last_name'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> lastName<span class="hljs-punctuation">;</span>
+  <span class="hljs-literal">@field</span> <span class="hljs-type">int</span> age<span class="hljs-punctuation">;</span>
+  <span class="hljs-literal">@field</span> <span class="hljs-type">String</span> email<span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
 <p>Above we can see that the <code>Model</code> adds an <code>id</code> property, as well as <code>createdAt</code> and <code>updatedAt</code> timestamps. The model
