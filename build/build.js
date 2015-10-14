@@ -40,6 +40,8 @@ hljs.registerLanguage("dart", function() {
       { className: 'literal',
         begin: /\b-?\d*\.?[\d]+/},
       { className: 'literal',
+        begin: /@\w+/},
+      { className: 'literal',
         begin: /#\w+/},
 
       //{ className: 'method',
