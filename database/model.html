@@ -87,7 +87,7 @@ router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</spa
   <span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> table <span class="hljs-punctuation">=</span> <span class="hljs-string">'pieces_of_clothing'</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">// as opposed to "piece_of_clothings"</span>
 <span class="hljs-punctuation">}</span>
 
-<span class="hljs-keyword">class</span> <span class="hljs-type">Thing</span> <span class="hljs-punctuation">{</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">Thing</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">Model</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-literal">@Field</span><span class="hljs-punctuation">(</span><span class="hljs-string">'title'</span><span class="hljs-punctuation">)</span> <span class="hljs-type">String</span> name<span class="hljs-punctuation">;</span> <span class="hljs-comment">// overriding the column name</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
