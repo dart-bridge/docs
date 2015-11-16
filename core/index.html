@@ -4,9 +4,9 @@
   IoC Container behind the Dependency Injection system that Bridge sports.
 </p>
 <p>At the absolute foundation of Bridge, an <code>Application</code> object is running it all. The application only needs one thing
-to work; a configurations directory (<code>config/</code> be default) containing a file called <code>app.yaml</code>. That YAML file must
+to work; a configurations directory (<code>config/</code> by default) containing a file called <code>app.yaml</code>. That YAML file must
 contain a key called <code>service_providers</code> – a list that needs at least one item.</p>
-<p>Every item in the <code>service_providers</code> must be a classpath to a class that implements <code>ServiceProvider</code>. Think of the
+<p>Every item in the <code>service_providers</code> list must be a classpath to a class that extends <code>ServiceProvider</code>. Think of the
 Service Providers as bootstrappers for specific parts of the application. The built it Bridge libraries provide
 their own Service Providers, which you can include in the Service Provider list if you want.</p>
 <p>For example, the class <code>HttpServiceProvider</code> in the library <code>bridge.http</code> (yielding the classpath
