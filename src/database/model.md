@@ -114,7 +114,7 @@ class PieceOfClothing {
   static const table = 'pieces_of_clothing'; // as opposed to "piece_of_clothings"
 }
 
-class Thing {
+class Thing extends Model {
   @Field('title') String name; // overriding the column name
 }
 ```
