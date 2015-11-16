@@ -14,7 +14,7 @@ Server started on http://localhost:1337
 =
 ```
 
-Open [the URL](http://localhost:1337) and you should see the Bridge logo.
+Open <a href="http://localhost:1337" target="_blank">the URL</a> and you should see the Bridge logo.
 
 Next, we want the program to restart when we change any source file. To do that, we can run the `watch` command.
 However, after the restart the server will have stopped. To change what commands will be run on each restart, we have
