@@ -26,18 +26,14 @@ the `Gateway` instance, which has methods to access and modify the database sche
 ```dart
 class CreateArticlesTable extends Migration {
   run(Gateway gateway) async {
-    await gateway.create('articles', (Schema schema) {
-      
-      // These two fills the schema neccessary for a Model to work
-      schema.id();
-      schema.timestamps();
-      
-      // Specific to the Article model
+    // The [model] method includes the neccessary fields for an
+    // ORM entity extending the [Model] class.
+    await gateway.model('articles', (Schema schema) {
       schema.string('name');
       schema.string('serial_number').unique();
     });
   }
-  
+
   rollback(Gateway gateway) async {
     // This is how we roll back the creation of a table
     await gateway.drop('articles');

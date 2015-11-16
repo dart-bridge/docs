@@ -95,6 +95,7 @@ hljs.registerLanguage("chalk", function() {
 hljs.configure({
   languages: [
     'dart',
+    'shell',
     'yaml',
     'bridge-cli',
     'chalk',

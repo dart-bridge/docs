@@ -22,7 +22,7 @@ class MyClass {
 
 serializer.register('MyClass', MyClass,
   serialize: (MyClass o) => [
-    o.property1, 
+    o.property1,
     o.property2],
   deserialize: (List o) => new MyClass()
     ..property1 = o[0]
@@ -30,7 +30,7 @@ serializer.register('MyClass', MyClass,
 ```
 
 Using the knowledge of how to break down and reconstruct a class, the serializer now has the ability to send instances
-of that class through protocols that doesn't share state with your application (e.g. HTTP or WebSocket).
+of that class through protocols that doesn't share memory with your application (e.g. HTTP, WebSocket, Isolate).
 
 ## Serializing and deserializing
 Given that the code above has been run, we can now serialize any structure that contains instances of `MyClass`:
@@ -57,22 +57,22 @@ output of each serial data, to make sure that only primitive values remain:
 ```dart
 class First {
   final Second second;
-  
+
   First(Second this.second);
 }
 
 class Second {
   final String property;
-  
+
   Second(String this.property);
 }
 
 serializer.register('First', First,
-  serialize: (f) => f.second, 
+  serialize: (f) => f.second,
   deserialize: (s) new First(s));
-  
+
 serializer.register('Second', Second,
-  serialize: (s) => s.property, 
+  serialize: (s) => s.property,
   deserialize: (p) new Second(p));
 ```
 

@@ -5,8 +5,8 @@
 ## Initial commands
 The first thing we'll do is make sure we can start up the server and see something in the browser without issues:
 
-```bash
-$ dart bridge
+```shell
+> dart bridge
 ```
 ```bridge-cli
 = start
@@ -22,14 +22,14 @@ to provide them in the argument list of the `dart bridge` command.
 
 To start the server, and restart both the program and the server on each file change, we can run this command:
 
-```bash
-$ dart bridge start, watch
+```shell
+> dart bridge start, watch
 ```
 
 ## Hello World
 When that's done, we can go into the project and change what we see in the browser.
 
-Go to the file `lib/main/main.dart`. Your file might look a little different, but this is the gist of it. Focus on the 
+Go to the file `lib/main/main.dart`. Your file might look a little different, but this is the gist of it. Focus on the
 `routes` method on the `Main` class:
 
 ```dart
@@ -39,7 +39,7 @@ Go to the file `lib/main/main.dart`. Your file might look a little different, bu
 
 class Main {
   PagesController controller;
-  
+
   Main(this.controller);
 
   routes(Router router) {

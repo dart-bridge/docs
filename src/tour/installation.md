@@ -12,28 +12,28 @@ can be installed via [Pub](https://pub.dartlang.org). Since you installed the SD
 step, we should have access to the executable `pub`. To _install the installer_, please run the
 following command:
 
-```bash
-$ pub global activate new_bridge
+```shell
+> pub global activate new_bridge
 ```
 
 ## Creating a project
 To create a new project, change the terminal directory to where you store your projects:
 
-```bash
-$ cd ~/code
+```shell
+> cd ~/code
 ```
 
 Then, we use the installer we installed above to create a new project:
 
-```bash
-$ new_bridge my_project
+```shell
+> new_bridge my_project
 ```
 
 *Ta da!* You're done! Go into the project and fire it up!
 
-```bash
-$ cd my_project
-$ dart bridge
+```shell
+> cd my_project
+> dart bridge
 ```
 
 ## Optional installer flags

@@ -19,12 +19,12 @@ service_providers:
 ```dart
 part of services;
 
-class MyDatabaseServiceProvider implements ServiceProvider {
+class MyDatabaseServiceProvider extends ServiceProvider {
   setUp(Container container, MyDatabaseClass db) async {
     container.singleton(db);
     await db.connect();
   }
-  
+
   tearDown(MyDatabaseClass db) async {
     await db.disconnect();
   }
@@ -38,7 +38,7 @@ And since we are adding the `MyDatabaseClass` instance as a singleton, *everywhe
 `MyDatabaseClass` is requested, the same instance will be used. Instead of using a global object (which makes the code
 hard to test), dependency injection is leveraged instead.
 
-All the methods are resolved out of the [Service Container](#/docs/core/service-container). So we can have all the
+All the methods are resolved out of the [Service Container](/docs/bridge.core/service-container). So we can have all the
 dependencies we want in the constructor of `MyDatabaseClass`, and we can even add new dependencies, without having to
 change the Service Provider.
 
@@ -51,18 +51,27 @@ The `load` method is where we inject entities from other services. And to run fu
 has interacted with our service, the `run` method is used. This order of interactions could look like this:
 
 ```dart
-class PluginServiceProvider implements ServiceProvider {
+class PluginServiceProvider extends ServiceProvider {
   setUp(Container container, PluginManager pluginManager) {
     container.singleton(pluginManager);
   }
-  
+
   run(PluginManager pluginManager) {
     pluginManager.initializeAllRegisteredPlugins();
   }
 }
 ```
+
+In the above example, a class called `PluginManager` has been registered as a singleton. Later, in the `run` method the
+plugin manager does something with all registered plugins. We can attach another Service Provider to that be interacting
+with the plugin manager in the `load` method.
+
+Also, since this Service Provider will depend on that the plugin manager has been registered, we can enforce that dependency
+by annotating the new Service Provider with `@DependsOn`:
+
 ```dart
-class MyPluginServiceProvider implements ServiceProvider {
+@DependsOn(PluginServiceProvider)
+class MyPluginServiceProvider extends ServiceProvider {
   load(PluginManager pluginManager, MySpecialPlugin plugin) {
     pluginManager.registerPlugin(plugin);
   }
@@ -71,7 +80,15 @@ class MyPluginServiceProvider implements ServiceProvider {
 
 This way, we ensure that the Plugin Service doesn't depend on all the plugins. Instead, we make it so all the plugins
 exclusively depend on only the Plugin Service. And so, the plugins are now independently deployable, and can live in its
-own package.
+own package. Thanks to the `@DependsOn` annotation the application will throw an exception if `PluginServiceProvider` is not
+included in `app.yaml`.
+
+If a service *optionally* uses another, we can make the dependency non strict. The app will still work if that dependency
+is not included, but the annotation will still display the capabilities of the Service Provider.
+
+```dart
+@DependsOn(EventsServiceProvider, strict: false)
+```
 
 ## Lifecycle
 So, to sum it up, the lifecycle of a Service Provider looks like this:
