@@ -33,7 +33,9 @@ To contribute, go to [github.com/dart-bridge/docs](https://github.com/dart-bridg
 |   '-- index.md                          Overview of the component
 |
 |-- http                                  Contains documentation about [bridge.http]
-|   '-- index.md                          Overview of the component
+|   |-- index.md                          Overview of the component
+|   |-- router.md                         Routing and the Router class
+|   '-- middleware.md                     About Shelf and Middleware
 |
 |-- tether                                Contains documentation about [bridge.tether]
 |   '-- index.md                          Overview of the component
