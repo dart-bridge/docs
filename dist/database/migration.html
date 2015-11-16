@@ -19,18 +19,14 @@ migration, we can create a new migration which alters the schema, and then run t
 the <code>Gateway</code> instance, which has methods to access and modify the database schema.</p>
 <pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">CreateArticlesTable</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">Migration</span> <span class="hljs-punctuation">{</span>
   run<span class="hljs-punctuation">(</span><span class="hljs-type">Gateway</span> gateway<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-keyword">await</span> gateway.<span class="hljs-method">create</span><span class="hljs-punctuation">(</span><span class="hljs-string">'articles'</span>, <span class="hljs-punctuation">(</span><span class="hljs-type">Schema</span> schema<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-      
-      <span class="hljs-comment">// These two fills the schema neccessary for a Model to work</span>
-      schema.<span class="hljs-method">id</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-      schema.<span class="hljs-method">timestamps</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-      
-      <span class="hljs-comment">// Specific to the Article model</span>
+    <span class="hljs-comment">// The [model] method includes the neccessary fields for an</span>
+    <span class="hljs-comment">// ORM entity extending the [Model] class.</span>
+    <span class="hljs-keyword">await</span> gateway.<span class="hljs-method">model</span><span class="hljs-punctuation">(</span><span class="hljs-string">'articles'</span>, <span class="hljs-punctuation">(</span><span class="hljs-type">Schema</span> schema<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
       schema.<span class="hljs-method">string</span><span class="hljs-punctuation">(</span><span class="hljs-string">'name'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
       schema.<span class="hljs-method">string</span><span class="hljs-punctuation">(</span><span class="hljs-string">'serial_number'</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">unique</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
     <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
   <span class="hljs-punctuation">}</span>
-  
+
   rollback<span class="hljs-punctuation">(</span><span class="hljs-type">Gateway</span> gateway<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-comment">// This is how we roll back the creation of a table</span>
     <span class="hljs-keyword">await</span> gateway.<span class="hljs-method">drop</span><span class="hljs-punctuation">(</span><span class="hljs-string">'articles'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>

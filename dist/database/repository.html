@@ -13,62 +13,28 @@ handler<span class="hljs-punctuation">(</span><span class="hljs-type">Repository
   <span class="hljs-comment">// ..</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
-<p>In the <code>handler</code> function, we now have a repository connected to a table on the database called <code>my_data_structures</code>.
-Notice that the convention is plural form snake case:</p>
-<ul>
-<li><code>User</code>: <code>users</code></li>
-<li><code>Page</code>: <code>pages</code></li>
-<li><code>Address</code>: <code>addresses</code></li>
-<li><code>DeathStar</code>: <code>death_stars</code></li>
-</ul>
-<blockquote>
-<p><strong>Note:</strong> The Repository will append an “s” to the end of the singular form. Unless that ends with an “s”, in which
-case “es” will be appended instead, as seen in the <code>Address</code> example above.</p>
-</blockquote>
-<p>If you need to override this convention, you need to <a href="#extended-repositories">extend the repository class</a>.</p>
 <h2>Using the Repository</h2>
 <p>You can think of the repository as a direct translation of a <a href="/docs/bridge.database/gateway">gateway table call</a>, but
 instead of returning maps, it returns the data structure that you specify. Similarly, the <code>Repository</code> takes data
-structures as input to <code>add</code> and <code>addAll</code> methods, instead of maps.</p>
+structures as input, and uses a <code>save</code> method rather than an <code>add</code> method.</p>
 <pre><code class="language-dart">handler<span class="hljs-punctuation">(</span><span class="hljs-type">Gateway</span> gateway, <span class="hljs-type">Repository</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">User</span><span class="hljs-punctuation">&gt;</span> users<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
 
   <span class="hljs-comment">// returns a Stream&lt;Map&lt;String, dynamic&gt;&gt;</span>
   gateway.<span class="hljs-method">table</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span>
     .<span class="hljs-method">where</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">(</span>user<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> user.<span class="hljs-method">age</span> <span class="hljs-punctuation">&gt;</span> <span class="hljs-literal">20</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-    
+
   <span class="hljs-comment">// returns a Stream&lt;User&gt;</span>
   users
     .<span class="hljs-method">where</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">(</span>user<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> user.<span class="hljs-method">age</span> <span class="hljs-punctuation">&gt;</span> <span class="hljs-literal">20</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-    
+
   gateway.<span class="hljs-method">table</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span>
-    .<span class="hljs-method">add</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span> <span class="hljs-string">'first_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'Santa'</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-    
+    .<span class="hljs-method">add</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span> <span class="hljs-string">'first_name'</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'George'</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+
   users
-    .<span class="hljs-method">add</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">new</span> <span class="hljs-type">User</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>..<span class="hljs-method">firstName</span> <span class="hljs-punctuation">=</span> <span class="hljs-string">'Santa'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    .<span class="hljs-method">save</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">new</span> <span class="hljs-type">User</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>..<span class="hljs-method">firstName</span> <span class="hljs-punctuation">=</span> <span class="hljs-string">'George'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
 <p>There are also a few helper methods available for the <code>Repository</code> that the gateway queries don’t have:</p>
 <pre><code class="language-dart">users.<span class="hljs-method">find</span><span class="hljs-punctuation">(</span><span class="hljs-literal">1</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">/* is equal to */</span> users.<span class="hljs-method">where</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">(</span>user<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> user.<span class="hljs-method">id</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">=</span> <span class="hljs-literal">1</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">first</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 users.<span class="hljs-method">all</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">/* executes the same query as */</span> gateway.<span class="hljs-method">table</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-</code></pre>
-<h2>Relationships</h2>
-<p>Currently, the only type of relationships available is “one to many”:</p>
-<pre><code class="language-dart">handler<span class="hljs-punctuation">(</span><span class="hljs-type">Repository</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">Player</span><span class="hljs-punctuation">&gt;</span> players, <span class="hljs-type">Repository</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">Equipment</span><span class="hljs-punctuation">&gt;</span> equipment<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-  <span class="hljs-type">Player</span> player1 <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> players.<span class="hljs-method">find</span><span class="hljs-punctuation">(</span><span class="hljs-literal">1</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-  <span class="hljs-type">Stream</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">Equipment</span><span class="hljs-punctuation">&gt;</span> inventory <span class="hljs-punctuation">=</span> players.<span class="hljs-method">relationship</span><span class="hljs-punctuation">(</span>player1<span class="hljs-punctuation">)</span>.<span class="hljs-method">hasMany</span><span class="hljs-punctuation">(</span><span class="hljs-type">Equipment</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-  
-  <span class="hljs-type">Equipment</span> sword <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> equipment.<span class="hljs-method">where</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">(</span>e<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> e.<span class="hljs-method">name</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">=</span> <span class="hljs-string">'Sword'</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">first</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-  <span class="hljs-type">Player</span> swordOwner <span class="hljs-punctuation">=</span> <span class="hljs-keyword">await</span> equipment.<span class="hljs-method">relationship</span><span class="hljs-punctuation">(</span>sword<span class="hljs-punctuation">)</span>.<span class="hljs-method">belongsTo</span><span class="hljs-punctuation">(</span><span class="hljs-type">Player</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-<span class="hljs-punctuation">}</span>
-</code></pre>
-<h2>Extended Repositories</h2>
-<p>To override conventions, or simply to have a good place for query scopes and so on, it might be a good idea to extend
-the <code>Repository</code> class:</p>
-<pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">ArticlesRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">Repository</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">Article</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-punctuation">{</span>
-  <span class="hljs-type">String</span> <span class="hljs-keyword">get</span> table <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">'articles_table'</span><span class="hljs-punctuation">;</span>
-  
-  <span class="hljs-type">Stream</span><span class="hljs-punctuation">&lt;</span><span class="hljs-type">Category</span><span class="hljs-punctuation">&gt;</span> categoriesOf<span class="hljs-punctuation">(</span><span class="hljs-type">Article</span> article<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-keyword">return</span> relationship<span class="hljs-punctuation">(</span>article<span class="hljs-punctuation">)</span>.<span class="hljs-method">hasMany</span><span class="hljs-punctuation">(</span><span class="hljs-type">Category</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-  <span class="hljs-punctuation">}</span>
-<span class="hljs-punctuation">}</span>
 </code></pre>

@@ -3,7 +3,7 @@
 </p>
 <h2>Initial commands</h2>
 <p>The first thing we’ll do is make sure we can start up the server and see something in the browser without issues:</p>
-<pre><code class="language-bash">$ dart bridge
+<pre><code class="language-shell">&gt; dart bridge
 </code></pre>
 <pre><code class="language-bridge-cli"><span class="hljs-literal">=<span class="hljs-method"> </span><span class="hljs-method">s</span><span class="hljs-method">t</span><span class="hljs-method">a</span><span class="hljs-method">r</span><span class="hljs-method">t</span></span>
 Server started on http://localhost:1337
@@ -14,7 +14,7 @@ Server started on http://localhost:1337
 However, after the restart the server will have stopped. To change what commands will be run on each restart, we have
 to provide them in the argument list of the <code>dart bridge</code> command.</p>
 <p>To start the server, and restart both the program and the server on each file change, we can run this command:</p>
-<pre><code class="language-bash">$ dart bridge start, watch
+<pre><code class="language-shell">&gt; dart bridge start, watch
 </code></pre>
 <h2>Hello World</h2>
 <p>When that’s done, we can go into the project and change what we see in the browser.</p>
@@ -26,7 +26,7 @@ to provide them in the argument list of the <code>dart bridge</code> command.</p
 
 <span class="hljs-keyword">class</span> <span class="hljs-type">Main</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-type">PagesController</span> controller<span class="hljs-punctuation">;</span>
-  
+
   <span class="hljs-type">Main</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">this</span>.<span class="hljs-method">controller</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 
   routes<span class="hljs-punctuation">(</span><span class="hljs-type">Router</span> router<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>

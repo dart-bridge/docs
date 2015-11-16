@@ -17,14 +17,14 @@ be registered on the serializer, or else it will be cast to a <code>String</code
 
 serializer.<span class="hljs-method">register</span><span class="hljs-punctuation">(</span><span class="hljs-string">'MyClass'</span>, <span class="hljs-type">MyClass</span>,
   serialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span><span class="hljs-type">MyClass</span> o<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> [
-    o.<span class="hljs-method">property1</span>, 
+    o.<span class="hljs-method">property1</span>,
     o.<span class="hljs-method">property2</span>],
   deserialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span><span class="hljs-type">List</span> o<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-type">MyClass</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>
     ..<span class="hljs-method">property1</span> <span class="hljs-punctuation">=</span> o[<span class="hljs-literal">0</span>]
     ..<span class="hljs-method">property2</span> <span class="hljs-punctuation">=</span> o[<span class="hljs-literal">1</span>]<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 </code></pre>
 <p>Using the knowledge of how to break down and reconstruct a class, the serializer now has the ability to send instances
-of that class through protocols that doesn’t share state with your application (e.g. HTTP or WebSocket).</p>
+of that class through protocols that doesn’t share memory with your application (e.g. HTTP, WebSocket, Isolate).</p>
 <h2>Serializing and deserializing</h2>
 <p>Given that the code above has been run, we can now serialize any structure that contains instances of <code>MyClass</code>:</p>
 <pre><code class="language-dart"><span class="hljs-keyword">final</span> serial <span class="hljs-punctuation">=</span> serializer.<span class="hljs-method">serialize</span><span class="hljs-punctuation">(</span>[
@@ -45,22 +45,22 @@ serialization of the class, as long as they have their own protocol. The seriali
 output of each serial data, to make sure that only primitive values remain:</p>
 <pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">First</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-keyword">final</span> <span class="hljs-type">Second</span> second<span class="hljs-punctuation">;</span>
-  
+
   <span class="hljs-type">First</span><span class="hljs-punctuation">(</span><span class="hljs-type">Second</span> <span class="hljs-keyword">this</span>.<span class="hljs-method">second</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
 
 <span class="hljs-keyword">class</span> <span class="hljs-type">Second</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> property<span class="hljs-punctuation">;</span>
-  
+
   <span class="hljs-type">Second</span><span class="hljs-punctuation">(</span><span class="hljs-type">String</span> <span class="hljs-keyword">this</span>.<span class="hljs-method">property</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 <span class="hljs-punctuation">}</span>
 
 serializer.<span class="hljs-method">register</span><span class="hljs-punctuation">(</span><span class="hljs-string">'First'</span>, <span class="hljs-type">First</span>,
-  serialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>f<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> f.<span class="hljs-method">second</span>, 
+  serialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>f<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> f.<span class="hljs-method">second</span>,
   deserialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>s<span class="hljs-punctuation">)</span> <span class="hljs-keyword">new</span> <span class="hljs-type">First</span><span class="hljs-punctuation">(</span>s<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
-  
+
 serializer.<span class="hljs-method">register</span><span class="hljs-punctuation">(</span><span class="hljs-string">'Second'</span>, <span class="hljs-type">Second</span>,
-  serialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>s<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> s.<span class="hljs-method">property</span>, 
+  serialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>s<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> s.<span class="hljs-method">property</span>,
   deserialize<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">(</span>p<span class="hljs-punctuation">)</span> <span class="hljs-keyword">new</span> <span class="hljs-type">Second</span><span class="hljs-punctuation">(</span>p<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 </code></pre>
 <h2>Data structure registration should be shared</h2>
