@@ -1,0 +1,154 @@
+<p class="lead">
+  Bridge's intelligent router enables quick conversion from HTTP request/input to expressive responses.
+</p>
+<h3>Basic usage</h3>
+<p>Getting started with the router is super easy. We’ll assume that we’re working inside the <code>Main#routes</code> method inside
+<code>lib/main/main.dart</code>, even though the router can be accessed from anywhere where we have Dependency Injection.</p>
+<pre><code class="language-dart">routes<span class="hljs-punctuation">(</span><span class="hljs-type">Router</span> router<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+  router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello, World!'</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>There are methods for the different HTTP verbs, like <code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>.</p>
+<pre><code class="language-dart">router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'foo'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">'foo'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">// GET /foo</span>
+router.<span class="hljs-method">post</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/bar'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">'bar'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">// POST /bar</span>
+router.<span class="hljs-method">put</span><span class="hljs-punctuation">(</span><span class="hljs-string">'baz/fizz'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">'baz'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">// PUT /baz/fizz</span>
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> You can see all the registered routes at runtime by running the <code>routes</code> command in the CLI.</p>
+</blockquote>
+<h4>Wildcards</h4>
+<p>Wildcards in the registered route endpoint are mapped over to named arguments in the route handlers:</p>
+<pre><code class="language-dart">router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'posts/:slug'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-type">String</span> slug<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> slug<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<h4>Route Attachments</h4>
+<p>Each of the HTTP verb methods return a builder that can attach information to the route in question. For example, routes
+can be named so that we don’t rely on the actual route endpoint too much; it might change!</p>
+<pre><code class="language-dart">router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'/'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-keyword">null</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'home'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>Each route can also ignore or add to the list of <a href="/docs/bridge.http/middleware">Middleware</a> that will be used for the
+request. Use the methods <code>ignoreMiddleware</code> and <code>withMiddleware</code>:</p>
+<pre><code class="language-dart">router.<span class="hljs-method">post</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-keyword">null</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'users.store'</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">withMiddleware</span><span class="hljs-punctuation">(</span><span class="hljs-type">SomeSpecialMiddleware</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">ignoreMiddleware</span><span class="hljs-punctuation">(</span><span class="hljs-type">CsrfMiddleware</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>If the handler is a remote function (like a controller method), we might in some case want to send through something
+that we have at initialization time. We can use the <code>inject</code> attachment to include instances to use for specific type
+injections.</p>
+<pre><code class="language-dart">router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'allo'</span>, <span class="hljs-punctuation">(</span><span class="hljs-type">String</span> name<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">'Hello, <span class="hljs-literal">$name</span>!'</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">inject</span><span class="hljs-punctuation">(</span><span class="hljs-string">'stranger'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+
+router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'foo'</span>, <span class="hljs-punctuation">(</span><span class="hljs-type">FooInterface</span> f<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">=</span><span class="hljs-punctuation">&gt;</span> <span class="hljs-string">''</span><span class="hljs-punctuation">)</span>
+      .<span class="hljs-method">inject</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">new</span> <span class="hljs-type">FooImplementation</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>, <span class="hljs-keyword">as</span><span class="hljs-punctuation">:</span> <span class="hljs-type">FooInterface</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<h4>Groups</h4>
+<p>If some route endpoints belong together, or share some attachment, it might be a good idea to group them.</p>
+<pre><code class="language-dart">router.<span class="hljs-method">group</span><span class="hljs-punctuation">(</span><span class="hljs-string">'comments'</span>, <span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+
+  router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'new'</span>, commentsController.<span class="hljs-method">create</span><span class="hljs-punctuation">)</span>
+        .<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'create'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+
+  router.<span class="hljs-method">get</span><span class="hljs-punctuation">(</span><span class="hljs-string">'remove'</span>, commentsController.<span class="hljs-method">delete</span><span class="hljs-punctuation">)</span>
+        .<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'delete'</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+
+<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span>.<span class="hljs-method">named</span><span class="hljs-punctuation">(</span><span class="hljs-string">'comments'</span><span class="hljs-punctuation">)</span>
+  .<span class="hljs-method">withMiddleware</span><span class="hljs-punctuation">(</span><span class="hljs-type">SomeAdminMiddleware</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>The above registers two routes, both of which using a <code>SomeAdminMiddleware</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>comments.create</td>
+<td>comments/new</td>
+</tr>
+<tr>
+<td>comments.delete</td>
+<td>comments/remove</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note:</strong> Nested groups with name parts get joined with dots.</p>
+</blockquote>
+<h4>Resources</h4>
+<p>The RESTful resources convention can be easily followed with the <code>resource</code> method:</p>
+<pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">PostsController</span> <span class="hljs-punctuation">{</span>
+  index<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  create<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  store<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  show<span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-type">String</span> id<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  edit<span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-type">String</span> id<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  update<span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-type">String</span> id<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+  destroy<span class="hljs-punctuation">(</span><span class="hljs-punctuation">{</span><span class="hljs-type">String</span> id<span class="hljs-punctuation">}</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span><span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+
+...
+
+<span class="hljs-method">router</span>.<span class="hljs-method">resource</span><span class="hljs-punctuation">(</span><span class="hljs-string">'posts'</span>, <span class="hljs-keyword">new</span> <span class="hljs-type">PostsController</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+</code></pre>
+<p>The above generates the following routes:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Name</th>
+<th>Endpoint</th>
+<th>Handler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>posts.index</td>
+<td>/posts</td>
+<td>PostsController#index</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>posts.create</td>
+<td>/posts/create</td>
+<td>PostsController#create</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>posts.store</td>
+<td>/posts</td>
+<td>PostsController#store</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>posts.show</td>
+<td>/posts/:id</td>
+<td>PostsController#show</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>posts.edit</td>
+<td>/posts/:id/edit</td>
+<td>PostsController#edit</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>posts.update</td>
+<td>/posts/:id</td>
+<td>PostsController#update</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>posts.destroy</td>
+<td>/posts/:id</td>
+<td>PostsController#destroy</td>
+</tr>
+</tbody>
+</table>
+<p>It will only generate the routes that has the expected handler on the controller. If the controller only had the <code>index</code>
+method the only route registered would be <code>posts.index</code>.</p>
