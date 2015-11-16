@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var markdown = require('gulp-markdown-it');
 var hljs = require('highlight.js');
 var exec = require('child_process').execSync;
+var fs = require('fs');
 
 var interpolatedVariables = {
   className: 'literal',
@@ -101,6 +102,10 @@ hljs.configure({
     'chalk',
   ],
 });
+
+exports.index = function() {
+  fs.writeFileSync('dist/index.json', JSON.stringify(require('../src/index.js')));
+};
 
 exports.build = function() {
   return gulp.src('src/**/*.md')
