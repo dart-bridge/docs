@@ -1,7 +1,0 @@
-<p class="lead">
-  This library's sole purpose is to decouple common exception types from different parts of the Bridge framework. To
-  catch those common exceptions, you might need to import this library.
-</p>
-
-
-
