@@ -14,12 +14,12 @@ The easiest way to understand this is to give an example:
 ```dart
 // This is a high level interface in a system
 abstract class Collaborator {
-  ...
+  // ...
 }
 
 // This is a low level implementation of the high level interface
 class LowLevelCollaborator implements Collaborator {
-  ...
+  // ...
 }
 
 // This high level policy class depends on a collaborator, but shouldn't
