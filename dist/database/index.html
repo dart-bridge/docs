@@ -1,0 +1,26 @@
+<p class="lead">
+  To access the database, Bridge is powered by Trestle, a unified database gateway abstraction and ORM system that
+  makes it possible to use MySQL, SQLite, PostgreSQL as well as an in memory database implementation.
+</p>
+<p>To use <code>bridge.database</code>, you have to use its Service Provider. In <code>config/app.yaml</code>, include this item under the
+<code>service_providers</code> list:</p>
+<pre><code class="language-yaml"><span class="hljs-comment"># config/app.yaml</span>
+<span class="hljs-key">
+service_providers:</span>
+<span class="hljs-keyword">-</span> bridge.database.DatabaseServiceProvider
+</code></pre>
+<p>Next, use <code>config/database.yaml</code> to configure the database layer. The <code>driver</code> key specifies what database
+implementation Trestle should use. The available ones are <code>in_memory</code>, <code>sqlite</code>, <code>my_sql</code> and <code>postgres</code>.</p>
+<p>Use the driver specific configuration to further configure the database.</p>
+<pre><code class="language-yaml"><span class="hljs-comment"># config/database.yaml</span>
+<span class="hljs-key">
+driver:</span> my_sql
+<span class="hljs-key">
+drivers:</span>
+<span class="hljs-key">  my_sql:</span>
+<span class="hljs-key">    host:</span> db.example.com
+<span class="hljs-key">    port:</span> <span class="hljs-literal">1234</span>
+<span class="hljs-key">    database:</span> my_database
+    
+  <span class="hljs-comment"># More configuration is available for the SQL drivers</span>
+</code></pre>
