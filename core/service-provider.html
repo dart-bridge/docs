@@ -1,0 +1,80 @@
+<p class="lead">
+  Without any Service Providers, Bridge would do nothing at all. It's easy to add the built in Service Providers that
+  you need, and here's how to create your own!
+</p>
+<h2>Setting up and tearing down</h2>
+<p>Imagine a database service. Somewhere in the lifecycle of our app, we need to establish a connection to the database,
+as well as disconnecting before the application exits. In a procedural style application, we would place this in the
+<em>beginning</em> and the <em>end</em> of our script. But that splits your service and places logically related code in two vastly
+different places.</p>
+<p>Here’s how we do it in a Service Provider:</p>
+<pre><code class="language-yaml"><span class="hljs-comment"># config/app.yaml</span>
+<span class="hljs-key">service_providers:</span>
+<span class="hljs-keyword">  -</span> services.MyDatabaseServiceProvider
+</code></pre>
+<pre><code class="language-dart"><span class="hljs-keyword">part</span> <span class="hljs-keyword">of</span> services<span class="hljs-punctuation">;</span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-type">MyDatabaseServiceProvider</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
+  setUp<span class="hljs-punctuation">(</span><span class="hljs-type">Container</span> container, <span class="hljs-type">MyDatabaseClass</span> db<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
+    container.<span class="hljs-method">singleton</span><span class="hljs-punctuation">(</span>db<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+    <span class="hljs-keyword">await</span> db.<span class="hljs-method">connect</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span>
+
+  tearDown<span class="hljs-punctuation">(</span><span class="hljs-type">MyDatabaseClass</span> db<span class="hljs-punctuation">)</span> <span class="hljs-keyword">async</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-keyword">await</span> db.<span class="hljs-method">disconnect</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>The <code>setUp</code> method will be executed as soon as the program is started with <code>dart bridge</code>. The <code>tearDown</code> method is
+executed when <code>exit</code> (or <kbd>^X</kbd>) is run.</p>
+<p>And since we are adding the <code>MyDatabaseClass</code> instance as a singleton, <em>everywhere</em> in your application, where a
+<code>MyDatabaseClass</code> is requested, the same instance will be used. Instead of using a global object (which makes the code
+hard to test), dependency injection is leveraged instead.</p>
+<p>All the methods are resolved out of the <a href="/docs/bridge.core/service-container">Service Container</a>. So we can have all the
+dependencies we want in the constructor of <code>MyDatabaseClass</code>, and we can even add new dependencies, without having to
+change the Service Provider.</p>
+<h2>Interaction</h2>
+<p>Sometimes, a component of the system provides extensibility by itself. For example, the <code>bridge.http</code> library accepts
+registering middleware during initialization. For this interaction between services, two more methods can be declared
+in the Service Providers.</p>
+<p>The <code>load</code> method is where we inject entities from other services. And to run functionality <em>after</em> some other service
+has interacted with our service, the <code>run</code> method is used. This order of interactions could look like this:</p>
+<pre><code class="language-dart"><span class="hljs-keyword">class</span> <span class="hljs-type">PluginServiceProvider</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
+  setUp<span class="hljs-punctuation">(</span><span class="hljs-type">Container</span> container, <span class="hljs-type">PluginManager</span> pluginManager<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+    container.<span class="hljs-method">singleton</span><span class="hljs-punctuation">(</span>pluginManager<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span>
+
+  run<span class="hljs-punctuation">(</span><span class="hljs-type">PluginManager</span> pluginManager<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+    pluginManager.<span class="hljs-method">initializeAllRegisteredPlugins</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>In the above example, a class called <code>PluginManager</code> has been registered as a singleton. Later, in the <code>run</code> method the
+plugin manager does something with all registered plugins. We can attach another Service Provider to that be interacting
+with the plugin manager in the <code>load</code> method.</p>
+<p>Also, since this Service Provider will depend on that the plugin manager has been registered, we can enforce that dependency
+by annotating the new Service Provider with <code>@DependsOn</code>:</p>
+<pre><code class="language-dart"><span class="hljs-literal">@DependsOn</span><span class="hljs-punctuation">(</span><span class="hljs-type">PluginServiceProvider</span><span class="hljs-punctuation">)</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">MyPluginServiceProvider</span> <span class="hljs-keyword">extends</span> <span class="hljs-type">ServiceProvider</span> <span class="hljs-punctuation">{</span>
+  load<span class="hljs-punctuation">(</span><span class="hljs-type">PluginManager</span> pluginManager, <span class="hljs-type">MySpecialPlugin</span> plugin<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">{</span>
+    pluginManager.<span class="hljs-method">registerPlugin</span><span class="hljs-punctuation">(</span>plugin<span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>This way, we ensure that the Plugin Service doesn’t depend on all the plugins. Instead, we make it so all the plugins
+exclusively depend on only the Plugin Service. And so, the plugins are now independently deployable, and can live in its
+own package. Thanks to the <code>@DependsOn</code> annotation the application will throw an exception if <code>PluginServiceProvider</code> is not
+included in <code>app.yaml</code>.</p>
+<p>If a service <em>optionally</em> uses another, we can make the dependency non strict. The app will still work if that dependency
+is not included, but the annotation will still display the capabilities of the Service Provider.</p>
+<pre><code class="language-dart"><span class="hljs-literal">@DependsOn</span><span class="hljs-punctuation">(</span><span class="hljs-type">EventsServiceProvider</span>, strict<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">)</span>
+</code></pre>
+<h2>Lifecycle</h2>
+<p>So, to sum it up, the lifecycle of a Service Provider looks like this:</p>
+<ol>
+<li>Run the <code>setUp</code> method, where the service is initialized and registered in the container.</li>
+<li>Run the <code>load</code> method, where the service injects other services and interact with them.</li>
+<li>Run the <code>run</code> method, where the service reacts to interactions from other services.</li>
+<li>The app goes to the idle running state.</li>
+<li>When the <code>exit</code> command is executed, run the <code>tearDown</code> method, where the service cleans up after itself.</li>
+</ol>
