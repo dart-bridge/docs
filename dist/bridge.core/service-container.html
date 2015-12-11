@@ -10,34 +10,34 @@ you can go directly to <a href="/docs/bridge.core/service-provider">this page</a
 The easiest way to understand this is to give an example:</p>
 <pre><code class="language-dart"><span class="hljs-comment">// This is a high level interface in a system</span>
 <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-type">Collaborator</span> <span class="hljs-punctuation">{</span>
-  ...
-}
+  <span class="hljs-comment">// ...</span>
+<span class="hljs-punctuation">}</span>
 
-// <span class="hljs-method">This</span> is a low level implementation <span class="hljs-keyword">of</span> the high level <span class="hljs-type">int</span>erface
+<span class="hljs-comment">// This is a low level implementation of the high level interface</span>
 <span class="hljs-keyword">class</span> <span class="hljs-type">LowLevelCollaborator</span> <span class="hljs-keyword">implements</span> <span class="hljs-type">Collaborator</span> <span class="hljs-punctuation">{</span>
-  ...
-}
+  <span class="hljs-comment">// ...</span>
+<span class="hljs-punctuation">}</span>
 
-// <span class="hljs-method">This</span> high level policy <span class="hljs-keyword">class</span> depends on a collaborator, but shouldn<span class="hljs-string">'t
-// depend on the low level implementation, hence the interface.
-class HighLevelPolicy {
-  final Collaborator dependency;
+<span class="hljs-comment">// This high level policy class depends on a collaborator, but shouldn't</span>
+<span class="hljs-comment">// depend on the low level implementation, hence the interface.</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">HighLevelPolicy</span> <span class="hljs-punctuation">{</span>
+  <span class="hljs-keyword">final</span> <span class="hljs-type">Collaborator</span> dependency<span class="hljs-punctuation">;</span>
 
-  // However, this class needs a collaborator, so we have to use
-  // the `new` keyword.
-  HighLevelPolicy()
-    : dependency = new LowLevelCollaborator(); // Don'</span>t do <span class="hljs-keyword">this</span>.
+  <span class="hljs-comment">// However, this class needs a collaborator, so we have to use</span>
+  <span class="hljs-comment">// the `new` keyword.</span>
+  <span class="hljs-type">HighLevelPolicy</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span>
+    <span class="hljs-punctuation">:</span> dependency <span class="hljs-punctuation">=</span> <span class="hljs-keyword">new</span> <span class="hljs-type">LowLevelCollaborator</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span> <span class="hljs-comment">// Don't do this.</span>
 
-  // <span class="hljs-method">That</span><span class="hljs-string">'s bad. Instead, there are patterns that lets us push
-  // the problem of creating the dependency out to the creator
-  // of this class. We can use the factory pattern:
-  HighLevelPolicy(Collaborator collaboratorFactory())
-    : dependency = collaboratorFactory();
+  <span class="hljs-comment">// That's bad. Instead, there are patterns that lets us push</span>
+  <span class="hljs-comment">// the problem of creating the dependency out to the creator</span>
+  <span class="hljs-comment">// of this class. We can use the factory pattern:</span>
+  <span class="hljs-type">HighLevelPolicy</span><span class="hljs-punctuation">(</span><span class="hljs-type">Collaborator</span> collaboratorFactory<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+    <span class="hljs-punctuation">:</span> dependency <span class="hljs-punctuation">=</span> collaboratorFactory<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
 
-  // Or, we can follow the Dependency Injection pattern.
-  HighLevelPolicy(this.dependency);
-}
-</span></code></pre>
+  <span class="hljs-comment">// Or, we can follow the Dependency Injection pattern.</span>
+  <span class="hljs-type">HighLevelPolicy</span><span class="hljs-punctuation">(</span><span class="hljs-keyword">this</span>.<span class="hljs-method">dependency</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
 <p>By pushing the problem of creation to the outside of the class, we effectively remove the dependency of the low level
 implementation detail. If we keep injecting, the creation is pushed further and further outwards, until you reach the
 <code>main</code> function, essentially:</p>
